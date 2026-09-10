@@ -47,7 +47,7 @@ const updateUserRole = async (req, res) => {
     }
 
     // Prevent changing the role of the main admin if necessary (optional)
-    if (user.email === 'admin_850419@alamal.com' && role !== 'admin') {
+    if (user.email === 'admin@alamal.com' && role !== 'admin') {
       return res.status(403).json({
         success: false,
         error: { message: 'Cannot change the role of the master admin' }
@@ -90,7 +90,7 @@ const deleteUser = async (req, res) => {
     }
 
     // Prevent deleting the master admin
-    if (user.email === 'admin_850419@alamal.com') {
+    if (user.email === 'admin@alamal.com') {
       return res.status(403).json({
         success: false,
         error: { message: 'Cannot delete the master admin' }

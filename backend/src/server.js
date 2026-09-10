@@ -18,6 +18,25 @@ const startServer = async () => {
         await sequelize.sync({ force: false });
         console.log('Database models synchronized.');
 
+        // Auto-create admin if it doesn't exist
+        const User = require('./models/User');
+        const bcrypt = require('bcrypt');
+        const adminEmail = 'admin@alamal.com';
+        
+        const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+        if (!existingAdmin) {
+            const hashedPassword = await bcrypt.hash('Admin@1234', 10);
+            await User.create({
+                firstName: 'مدير',
+                lastName: 'النظام',
+                email: adminEmail,
+                password: hashedPassword,
+                role: 'admin',
+                phone: '0500000000'
+            });
+            console.log('✅ تم إنشاء حساب المدير الافتراضي بنجاح.');
+        }
+
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });

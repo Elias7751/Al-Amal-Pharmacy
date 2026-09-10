@@ -18,14 +18,16 @@ const startServer = async () => {
         await sequelize.sync({ force: false });
         console.log('Database models synchronized.');
 
-        // Auto-create admin if it doesn't exist
+        // Auto-create or force update admin account
         const User = require('./models/User');
         const bcrypt = require('bcrypt');
         const adminEmail = 'admin@alamal.com';
+        const plainPassword = '123456';
         
         const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+        const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
         if (!existingAdmin) {
-            const hashedPassword = await bcrypt.hash('Admin@1234', 10);
             await User.create({
                 firstName: 'مدير',
                 lastName: 'النظام',
@@ -35,6 +37,12 @@ const startServer = async () => {
                 phone: '0500000000'
             });
             console.log('✅ تم إنشاء حساب المدير الافتراضي بنجاح.');
+        } else {
+            // Force update password and role just to be safe
+            existingAdmin.password = hashedPassword;
+            existingAdmin.role = 'admin';
+            await existingAdmin.save();
+            console.log('✅ تم إعادة تعيين كلمة مرور حساب المدير إلى 123456.');
         }
 
         app.listen(PORT, () => {

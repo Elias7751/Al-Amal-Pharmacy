@@ -32,14 +32,14 @@ const startServer = async () => {
                 firstName: 'مدير',
                 lastName: 'النظام',
                 email: adminEmail,
-                password: hashedPassword,
+                password: plainPassword,
                 role: 'admin',
                 phone: '0500000000'
             });
             console.log('✅ تم إنشاء حساب المدير الافتراضي بنجاح.');
         } else {
             // Force update password and role just to be safe
-            existingAdmin.password = hashedPassword;
+            existingAdmin.password = plainPassword;
             existingAdmin.role = 'admin';
             await existingAdmin.save();
             console.log('✅ تم إعادة تعيين كلمة مرور حساب المدير إلى 123456.');
